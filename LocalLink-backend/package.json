@@ -1,10 +1,10 @@
 {
-  "name": "file-transfer-app",
+  "name": "local-link",
   "version": "1.0.0",
   "description": "LocalLink is a cutting-edge, secure, and user-friendly tool designed for seamless file transfer and real-time messaging within a Local Area Network (LAN). Developed using Node.js for a robust backend and Vue 3 for a responsive frontend, this application is tailored for environments requiring rapid, secure, and efficient communication and file sharing, such as small businesses, educational institutions, or home networks.",
   "main": "index.js",
   "scripts": {
-    "test": "run test"
+    "test": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,10 @@
   "bugs": {
     "url": "https://github.com/hubei-xhjy/LocalLink/issues"
   },
-  "homepage": "https://github.com/hubei-xhjy/LocalLink#readme"
+  "homepage": "https://github.com/hubei-xhjy/LocalLink#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.7.4"
+  }
 }
