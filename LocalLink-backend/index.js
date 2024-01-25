@@ -1,18 +1,45 @@
 const express = require('express');
+const cors = require('cors');
 const http = require('http');
 const { Server } = require("socket.io");
 const crypto = require('crypto');
 
+const allowedOrigins = ['http://localhost:5173', 'http://192.168.3.45:5173']; // Add more as needed
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST'], // allowed request methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // allowed headers in requests
+    credentials: true
+};
+
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+// CORS configuration for Socket.IO
+const io = new Server(server, {
+    cors: {
+        origin: allowedOrigins, // Include all necessary origins
+        methods: ["GET", "POST"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true
+    }
+});
+
+// CORS configuration for Express
+app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
     res.send('LocalLink Server is Running');
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is listening on port ${PORT}`);
 });
 
@@ -47,8 +74,8 @@ function encrypt(text) {
 
 function decrypt(hash) {
     const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(hash.iv, 'hex'));
-    const decrpyted = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
-    return decrpyted.toString();
+    const decrypted = Buffer.concat([decipher.update(Buffer.from(hash.content, 'hex')), decipher.final()]);
+    return decrypted.toString();
 }
 
 // Handling file uploads
